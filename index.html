@@ -1,0 +1,685 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070910">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Security System</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      color-scheme: dark;
+      --red: #ff3659;
+      --blue: #4388ff;
+      --muted: #9ba8c2;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #070910;
+      color: #f5f7ff;
+      font-family: Arial, "Noto Sans JP", sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 26px 20px;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 430px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: clamp(32px, 9vw, 46px);
+      line-height: 1.3;
+      margin: 22px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--red);
+    }
+
+    .message {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #d0d6e6;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      margin: 24px auto 0;
+      padding: 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      border: 1px solid #5b6478;
+    }
+
+    /* SCREEN 1 */
+
+    #first {
+      background:
+        radial-gradient(ellipse at 0% 0%, #64102266, transparent 45%),
+        radial-gradient(ellipse at 100% 100%, #073d7966, transparent 45%),
+        #070910;
+      isolation: isolate;
+    }
+
+    #first::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(#ffffff08 1px, transparent 1px),
+        linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, black, transparent);
+    }
+
+    .system-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 0;
+      border-top: 1px solid #ffffff22;
+      border-bottom: 1px solid #ffffff22;
+      color: #a9b2c8;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .system-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 12px var(--red);
+    }
+
+    .hero-emblem {
+      width: 146px;
+      height: 146px;
+      margin: 38px auto 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #ff365955;
+      border-radius: 50%;
+      position: relative;
+      background: radial-gradient(circle, #ff193322, transparent 70%);
+      box-shadow:
+        0 0 55px #ff183019,
+        inset 0 0 25px #ff183012;
+    }
+
+    .hero-emblem::before,
+    .hero-emblem::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid #568eff44;
+      border-radius: 50%;
+    }
+
+    .hero-emblem::after {
+      inset: -8px;
+      border-color: #ff365933;
+      border-style: dashed;
+      animation: orbit 22s linear infinite;
+    }
+
+    .hero-symbol {
+      font-size: 76px;
+      color: var(--red);
+      text-shadow: 0 0 24px #ff163c88;
+    }
+
+    @keyframes orbit {
+      to { transform: rotate(360deg); }
+    }
+
+    #first .tag {
+      color: #ff536c;
+      font-size: 10px;
+      letter-spacing: 4px;
+    }
+
+    #first h1 {
+      font-size: clamp(37px, 10vw, 50px);
+      letter-spacing: 2px;
+      line-height: 1.18;
+      text-shadow: 0 0 30px #ff173022;
+    }
+
+    .hero-subtitle {
+      color: #9ea8c1;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+    }
+
+    .hero-notice {
+      margin-top: 28px;
+      padding: 15px;
+      border: 1px solid #ffffff20;
+      border-left: 2px solid var(--red);
+      background: linear-gradient(110deg, #ffffff08, #ffffff02);
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.9;
+      color: #c5ccdb;
+    }
+
+    .hero-notice strong {
+      color: #ff536c;
+      letter-spacing: 1px;
+    }
+
+    .close-button {
+      width: 84px;
+      height: 84px;
+      margin: 28px auto 12px;
+      border: 1px solid #ff526e;
+      outline: 1px solid #ff526e44;
+      outline-offset: 5px;
+      border-radius: 50%;
+      color: white;
+      background: linear-gradient(145deg, #e92348, #76162d);
+      font-size: 44px;
+      box-shadow:
+        0 0 35px #ff183044,
+        inset 0 1px #ffffff44;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .close-button:active {
+      transform: scale(.94);
+      box-shadow: 0 0 50px #ff183088;
+    }
+
+    .hint {
+      letter-spacing: 2px;
+      color: #7f8ba6;
+      font-size: 10px;
+    }
+
+    /* SCREEN 2 */
+
+    #warning {
+      background:
+        radial-gradient(ellipse at center, #45000a, #080000 75%);
+    }
+
+    #warning::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 3px,
+        #ff001008 4px
+      );
+    }
+
+    .warning-icon {
+      font-size: 72px;
+      color: var(--red);
+      text-shadow: 0 0 25px #ff002b;
+      animation: blink .5s infinite alternate;
+    }
+
+    @keyframes blink {
+      from { opacity: .55; }
+      to { opacity: 1; }
+    }
+
+    .panel {
+      text-align: left;
+      padding: 18px;
+      border: 1px solid #ff304a;
+      border-radius: 10px;
+      background: #21060b;
+    }
+
+    .panel-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #59202a;
+      font-size: 13px;
+    }
+
+    .panel-row:last-child {
+      border-bottom: none;
+    }
+
+    .status {
+      color: #ff405c;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .scan {
+      height: 5px;
+      background: #361019;
+      margin: 22px 0;
+      overflow: hidden;
+    }
+
+    .scan-bar {
+      width: 30%;
+      height: 100%;
+      background: var(--red);
+      box-shadow: 0 0 15px var(--red);
+      animation: scan 1.2s infinite alternate;
+    }
+
+    @keyframes scan {
+      to { transform: translateX(230%); }
+    }
+
+    .stop-button {
+      color: white;
+      background: #242432;
+      border-color: #8c91a5;
+    }
+
+    .demo-note {
+      margin-top: 24px;
+      font-size: 10px;
+      line-height: 1.7;
+      color: #9ca3b7;
+    }
+
+    /* SCREEN 3 */
+
+    #billing {
+      background:
+        radial-gradient(circle at top, #3c0610, transparent 60%),
+        #100408;
+    }
+
+    .billing-card {
+      border: 1px solid #ff4055;
+      border-radius: 14px;
+      padding: 22px 18px;
+      background: #1d080e;
+      box-shadow: 0 0 30px #ff003322;
+    }
+
+    .billing-label {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 5px;
+      background: #ff304a;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .amount {
+      font-size: clamp(30px, 8vw, 42px);
+      color: #ff4055;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+
+    .billing-note {
+      text-align: left;
+      padding: 14px;
+      border-radius: 8px;
+      background: #300d15;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .billing-button {
+      background: #ff304a;
+      border-color: #ff304a;
+      color: white;
+    }
+
+    @media (max-width: 360px) {
+      .screen {
+        padding: 22px 16px;
+      }
+
+      .hero-emblem {
+        width: 125px;
+        height: 125px;
+        margin-top: 30px;
+      }
+
+      .system-bar {
+        font-size: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <!-- SCREEN 1: INTRO -->
+
+    <section id="first" class="screen">
+      <div class="content">
+
+        <div class="system-bar">
+          <span>SECURITY SYSTEM</span>
+          <span><i class="system-dot"></i>MONITORING</span>
+        </div>
+
+        <div class="hero-emblem">
+          <div class="hero-symbol">⚠</div>
+        </div>
+
+        <p class="tag">SECURITY / SYSTEM ALERT</p>
+
+        <h1>SECURITY<br>ALERT</h1>
+
+        <p class="hero-subtitle">
+          ADVANCED PROTECTION INTERFACE
+        </p>
+
+        <div class="hero-notice">
+          <strong>! SYSTEM NOTICE</strong><br>
+          セキュリティに関する警告が表示されています。
+          下のボタンをタップして次の画面へ進んでください。
+        </div>
+
+        <button
+          class="close-button"
+          id="closeButton"
+          aria-label="次の画面へ進む"
+        >×</button>
+
+        <p class="hint">TAP TO CONTINUE</p>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ALERT -->
+
+    <section id="warning" class="screen hidden">
+      <div class="content">
+
+        <div class="warning-icon">⚠</div>
+
+        <p class="tag">CRITICAL SECURITY ALERT</p>
+
+        <h1>クレジットカードの情報が盗まれました</h1>
+
+        <div class="panel">
+          <div class="panel-row">
+            <span>クレジットカード情報</span>
+            <span class="status">警告</span>
+          </div>
+
+          <div class="panel-row">
+            <span>個人情報</span>
+            <span class="status">警告</span>
+          </div>
+
+          <div class="panel-row">
+            <span>アカウント情報</span>
+            <span class="status">警告</span>
+          </div>
+
+          <div class="panel-row">
+            <span>不正アクセスの疑い</span>
+            <span class="status">検知</span>
+          </div>
+        </div>
+
+        <div class="scan">
+          <div class="scan-bar"></div>
+        </div>
+
+        <p class="message">
+          セキュリティ上の警告が発生しています。
+        </p>
+
+        <button class="button" id="cancelButton"
+style="background:#ff304a;color:white;border-color:#ff304a;">
+登録をキャンセルする </button>
+
+        <button class="button stop-button" id="stopButton">
+          警告音を停止する
+        </button>
+
+        <p class="demo-note">
+            ウイルスに感染しました
+        </p>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 3: REGISTRATION DEMO -->
+
+    <section id="billing" class="screen hidden">
+      <div class="content">
+
+        <p class="tag">PREMIUM MEMBERSHIP</p>
+
+        <div class="billing-card">
+          <div style="font-size: 54px;">⚠️</div>
+
+          <span class="billing-label">登録完了のお知らせ</span>
+
+          <h1>ご登録ありがとうございます</h1>
+
+          <p class="message">
+            プレミアム会員への登録が完了しました。
+          </p>
+
+          <div class="billing-note">
+            <strong>【会員情報】</strong><br>
+            会員ID：DEMO-9382-0164<br>
+            ご利用プラン：プレミアム会員（演出用）<br>
+            お支払い金額：98,000円<br>
+            お支払い方法：口座支払い
+          </div>
+
+          <h3 style="margin-top: 24px;">
+            【システム情報】
+          </h3>
+
+          <div class="billing-note">
+            
+            IPアドレス：取得済み<br>
+            ご利用ブラウザ：取得・送信<br>
+            OS情報：取得・送信
+          </div>
+
+          <p class="message" style="margin-top: 22px;">
+            あなたの端末はウイルスに感染しました。<br>
+            直ちににお支払いを済ませてください。
+          </p>
+
+          <button
+            class="button billing-button"
+            id="detailButton"
+          >
+            確認する
+          </button>
+
+          <p class="demo-note">
+            DEMO SCREEN / NO PAYMENT / NO DATA COLLECTION
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const first = document.getElementById("first");
+    const warning = document.getElementById("warning");
+    const billing = document.getElementById("billing");
+
+    let audioContext = null;
+    let alarmTimer = null;
+    let alarmRunning = false;
+    let switching = false;
+
+    function showScreen(target) {
+      first.classList.add("hidden");
+      warning.classList.add("hidden");
+      billing.classList.add("hidden");
+
+      target.classList.remove("hidden");
+      window.scrollTo(0, 0);
+    }
+
+    async function startAlarm() {
+      try {
+        audioContext = new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+        await audioContext.resume();
+
+        alarmRunning = true;
+        playAlarm();
+
+        alarmTimer = setInterval(playAlarm, 650);
+      } catch (error) {
+        console.log("音声を再生できませんでした。", error);
+      }
+    }
+
+    function playAlarm() {
+      if (!alarmRunning || !audioContext) return;
+      if (audioContext.state !== "running") return;
+
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const now = audioContext.currentTime;
+
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(880, now);
+      oscillator.frequency.setValueAtTime(660, now + 0.16);
+
+      gain.gain.setValueAtTime(0.045, now);
+      gain.gain.setValueAtTime(0.045, now + 0.16);
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.32
+      );
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.start(now);
+      oscillator.stop(now + 0.33);
+    }
+
+    async function stopAlarm() {
+      if (switching) return;
+      switching = true;
+
+      alarmRunning = false;
+      clearInterval(alarmTimer);
+
+      if (audioContext) {
+        const oldContext = audioContext;
+        audioContext = null;
+
+        try {
+          await oldContext.close();
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      showScreen(billing);
+      switching = false;
+    }
+
+    document.getElementById("closeButton")
+.addEventListener("click", async () => {
+showScreen(warning);
+await startAlarm();
+});
+
+// 最初のページを開いてから3秒後に自動で2ページ目へ移動
+setTimeout(() => {
+if (!first.classList.contains("hidden")) {
+showScreen(warning);
+startAlarm();
+}
+}, 2000);
+
+document.getElementById("stopButton")
+.addEventListener("click", stopAlarm);
+
+document.getElementById("detailButton")
+.addEventListener("click", () => {
+alert(
+          "ご登録ありがとうございます。" +
+          "\nお支払いは来月末に端末に登録されてる口座から引き落とされます。"
+        );
+      });
+    document.getElementById("cancelButton")
+  .addEventListener("click", async () => {
+    await startAlarm();
+    alert(
+          "セキュリティー警告アラートが発生しました。" +
+          "\nウイルスに感染し口座情報が漏れた恐れがあります。" +
+          "\n内容をよくご確認ください。"
+        );;
+  });
+  </script>
+</body>
+</html>
